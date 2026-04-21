@@ -2,45 +2,43 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Account
-from .serializers import AccountSerializers
+from .models import Claim
+from .serializers import ClaimSerializers
 
 # Create your views here.
 
-
 @api_view(['GET'])
-def get_user(request):
-    account = Account.objects.all()
-    serializer = AccountSerializers(account, many=True)
-    return Response(serializer.data) 
-
+def get_claim(request):
+    claim = Claim.objects.all()
+    serializer = ClaimSerializers(claim, many=True)
+    return Response(serializer.data)
 
 @api_view(['POST'])
-def create_user(request):
-    serializer = AccountSerializers(data=request.data)
+def create_claim(request):
+    serializer = ClaimSerializers(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def update_user(request, pk):
+def update_claim(request, pk):
     try:
-        item = AccountSerializers.objects.get(pk=pk)
-    except AccountSerializers.DoesNotExist:
+        claim = Claim.objects.get(pk=pk)
+    except Claim.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
-        serializer = AccountSerializers(item)
+        serializer = ClaimSerializers(claim)
         return Response(serializer.data)
     
     elif request.method == 'PUT':
-        serializer = AccountSerializers(item, data=request.data)
+        serializer = ClaimSerializers(claim, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':
-        item.delete()
+        claim.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
