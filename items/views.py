@@ -6,7 +6,6 @@ from .models import ItemDetails
 from .serializers import ItemSerializers
 
 # Create your views here.
-
 @api_view(['GET'])
 def get_item_details(request):
     lost_item = ItemDetails.objects.all()
